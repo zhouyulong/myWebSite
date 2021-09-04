@@ -3,10 +3,9 @@ const Sequelize = require('sequelize');
 const {QueryTypes} = require('sequelize');
 
 // 使用连接池
-let sequelize = new Sequelize({
-    host: 'localhost',
-    dialect: 'sqlite',
-    storage: path.join(__dirname, '..', 'db', 'mywebsite.db'),
+let sequelize = new Sequelize('myWebSite', 'yulong', 'qwpo',{
+    host: '192.168.0.110',
+    dialect: 'mysql',
     pool: {
         max: 10,
         min: 0,
@@ -16,8 +15,10 @@ let sequelize = new Sequelize({
 });
 
 let User = sequelize;
-module.exports = User;
-console.log(module.exports)
+module.exports = {
+    User,
+    QueryTypes,
+};
 
 // 定义一个 Model 用来与表之间建立映射
 // const User = sequelize.define('users', {
@@ -85,16 +86,16 @@ console.log(module.exports)
 // }
 
 // 测试链接
-// let testModel = ()=> {
-//     sequelize
-//         .authenticate()
-//         .then(() => {
-//             console.log('connection has been established successfully')
-//             process.exit();
-//         })
-//         .catch(error => {
-//             console.log(error)
-//         });
-// }
-// // testModel();
+let testModel = ()=> {
+    sequelize
+        .authenticate()
+        .then(() => {
+            console.log('connection has been established successfully')
+            process.exit();
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
+testModel();
 // export default User;
