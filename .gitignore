@@ -10,3 +10,4 @@
 ./back/config/
 ./back/test.js
 ./.vscode/
+./.idea/
