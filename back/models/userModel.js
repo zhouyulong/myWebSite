@@ -44,16 +44,26 @@ let addUser = async (data) => {
             inData.username = data.username;
             inData.password = data.password;
             let timeDate = new Date();
+            inData.created_at = timeDate;
+            inData.updated_at = timeDate;
             let res = await User.query('insert into users(user_id, username, nickname, password, phone, avatar_url, is_manage,' +
                 'created_at, updated_at) values(?,?,?,?,?,?,?,?,?)', {type: QueryTypes.INSERT, replacements: Object.values(inData)});
-            return {
-                success: true,
-                info: '添加用户成功',
-                data: {
-                    user_id: inData.user_id,
-                    username: inData.username,
-                },
-            };
+            if(res){
+                return {
+                    success: true,
+                    info: '添加用户成功',
+                    data: {
+                        user_id: inData.user_id,
+                        username: inData.username,
+                    },
+                };
+            } else {
+                return {
+                    success: false,
+                    info: '添加用户失败',
+                    data: {}
+                }
+            }
         }else {
             return {
                 success: false,
@@ -72,14 +82,112 @@ let addUser = async (data) => {
 }
 
 // 删除用户
-
-
-// 修改用户信息
-
-
-// 查询指定user_id 和 username用户
-let getUsers = async () => {
-    let [users] = await User.query('select * from users', {raw: true, type:QueryTypes.SELECT})
+let deleteUser = async (data) => {
+    if(data.username) {
+        let searchSql = 'select user_id from users where username=' + data.username;
+        let res = await User.query(searchSql, {type: QueryTypes.SELECT});
+        if(res.length){
+            let delSql = 'delete from users where username=' + data.username;
+            let resDel = await User.query(delSql, {type: QueryTypes.DELETE});
+            if(resDel) {
+                return {
+                    success: true,
+                    info: '删除用户成功',
+                    data: {
+                        username: data.username,
+                    }
+                }
+            }else{
+                return {
+                    success: false,
+                    info: '删除用户失败',
+                    data: {},
+                }
+            }
+        }else{
+            return {
+                success: false,
+                info: '删除用户失败，该用户不存在',
+                data: {}
+            }
+        }
+    } else {
+        return {
+            success: false,
+            info: '删除用户失败，参数有误，请输入要删除的用户名',
+            data: {},
+        }
+    }
 }
 
-//
+// 修改用户信息
+let updateUser = async (data) => {
+    // try{
+    //     let dateTime = new Date();
+    //     if(data.username){
+    //         let searchSql = 'select * from '
+    //     }
+
+    // }catch{
+
+    // }
+
+}
+
+// 查询所有用户
+let getUsers = async () => {
+    try{
+        let users = await User.query('select * from users', {type:QueryTypes.SELECT})
+        if(users.length){
+            return {
+                success: true,
+                info: '查询用户成功',
+                data: {
+                    users: users,
+                },
+            }
+        }else{
+            return {
+                success: false,
+                info: '查询用户失败：未查询到用户',
+                data: {},
+            }
+        }
+    }catch(err){
+        return {
+            success: false,
+            info: '查询用户失败: ' + err,
+            data: {},
+        }
+    }
+}
+// test
+
+// 根据 username 查询指定用户
+let searchUserForUsernameIsExist = async (username) => {
+    try{
+        let searchSql = 'select user_id from users where username='+username;
+        let res = await User.query(searchSql, {type: QueryTypes.SELECT});
+        if(res.length){
+            return {
+                success: true,
+                info: '查询成功',
+                data: {
+                    user: res,
+                },
+            }
+        }else{
+            return {
+                success: false,
+                info: '查询失败，无此用户',
+                data: {},
+            };
+        };
+    }catch (err){
+        return {
+            success: false,
+            info: '查询用户失败: ' + err,
+            data: {},
+        }
+    }
+}
