@@ -1,7 +1,36 @@
 'use strict'
 
-const {User, QueryTypes} = require('../config/sqlite')
+const {User, QueryTypes} = require('../config/db')
 
+
+// 根据 username 查询指定用户
+let searchUserForUsernameIsExist = async (username) => {
+    try{
+        let searchSql = 'select user_id from users where username='+username;
+        let res = await User.query(searchSql, {type: QueryTypes.SELECT});
+        if(res.length){
+            return {
+                success: true,
+                info: '查询成功',
+                data: {
+                    user: res,
+                },
+            }
+        }else{
+            return {
+                success: false,
+                info: '查询失败，无此用户',
+                data: {},
+            };
+        }
+    }catch (e){
+        return {
+            success: false,
+            info: '查询用户失败: ' + e,
+            data: {},
+        }
+    }
+}
 
 // 新增用户
 let addUser = async (data) => {
@@ -20,8 +49,8 @@ let addUser = async (data) => {
         if (data.username && data.password){
             // 查询用户是否存在
             let isExistSql = 'select user_id from users where username=' + data.username;
-            let isExist = await User.query(isExistSql, {type: QueryTypes.SELECT}).length
-            if (isExist){
+            let isExist = await User.query(isExistSql, {type: QueryTypes.SELECT})
+            if (isExist.length){
                 return {
                     success: false,
                     info: '添加用户失败，用户已存在',
@@ -48,7 +77,7 @@ let addUser = async (data) => {
             inData.updated_at = timeDate;
             let res = await User.query('insert into users(user_id, username, nickname, password, phone, avatar_url, is_manage,' +
                 'created_at, updated_at) values(?,?,?,?,?,?,?,?,?)', {type: QueryTypes.INSERT, replacements: Object.values(inData)});
-            if(res){
+            if(res[1]){
                 return {
                     success: true,
                     info: '添加用户成功',
@@ -83,55 +112,132 @@ let addUser = async (data) => {
 
 // 删除用户
 let deleteUser = async (data) => {
-    if(data.username) {
-        let searchSql = 'select user_id from users where username=' + data.username;
-        let res = await User.query(searchSql, {type: QueryTypes.SELECT});
-        if(res.length){
-            let delSql = 'delete from users where username=' + data.username;
-            let resDel = await User.query(delSql, {type: QueryTypes.DELETE});
-            if(resDel) {
-                return {
-                    success: true,
-                    info: '删除用户成功',
-                    data: {
-                        username: data.username,
+    try{
+        if(data.username) {
+            let searchSql = 'select user_id from users where username=' + data.username;
+            let res = await User.query(searchSql, {type: QueryTypes.SELECT});
+            if(res.length){
+                let delSql = 'delete from users where username=' + data.username;
+                let resDel = await User.query(delSql, {type: QueryTypes.DELETE});
+                if(resDel) {
+                    return {
+                        success: true,
+                        info: '删除用户成功',
+                        data: {
+                            username: data.username,
+                        }
+                    }
+                }else{
+                    return {
+                        success: false,
+                        info: '删除用户失败',
+                        data: {},
                     }
                 }
             }else{
                 return {
                     success: false,
-                    info: '删除用户失败',
-                    data: {},
+                    info: '删除用户失败，该用户不存在',
+                    data: {}
                 }
             }
-        }else{
+        } else {
             return {
                 success: false,
-                info: '删除用户失败，该用户不存在',
-                data: {}
+                info: '删除用户失败，参数有误，请输入要删除的用户名',
+                data: {},
             }
         }
-    } else {
+    }catch (e) {
         return {
             success: false,
-            info: '删除用户失败，参数有误，请输入要删除的用户名',
+            info: '删除用户失败: ' + e,
             data: {},
         }
     }
 }
 
-// 修改用户信息
+// 修改用户信息 电话和昵称
 let updateUser = async (data) => {
-    // try{
-    //     let dateTime = new Date();
-    //     if(data.username){
-    //         let searchSql = 'select * from '
-    //     }
-
-    // }catch{
-
-    // }
-
+    try {
+        if (data.username){
+            let isExist = await searchUserForUsernameIsExist(data.username);
+            let retSuccess = {
+                success: true,
+                info: '修改用户信息成功',
+                data: {},
+            };
+            if (isExist.success){
+                if (data.nickname && data.phone) {
+                    let dateTime = new Date();
+                    let updateSql = 'update users set nickname=' + data.nickname + ', phone=' + data.phone +', updated_at='+ dateTime + ' where username='+data.username;
+                    let res = await User.query(updateSql, {type: QueryTypes.UPDATE});
+                    if (res[1]) {
+                        return retSuccess;
+                    }
+                    else {
+                        return {
+                            success: false,
+                            info: '修改用户信息失败',
+                            data: {},
+                        }
+                    }
+                }else if(data.nickname){
+                    let dateTime = new Date();
+                    let updateSql = 'update users set nickname=' + data.nickname +', updated_at='+ dateTime + ' where username='+data.username;
+                    let res = await User.query(updateSql, {type: QueryTypes.UPDATE});
+                    if (res[1]) {
+                        return retSuccess;
+                    }
+                    else {
+                        return {
+                            success: false,
+                            info: '修改用户信息失败',
+                            data: {},
+                        }
+                    }
+                } else if(data.phone){
+                    let dateTime = new Date();
+                    let updateSql = 'update users set phone=' + data.phone  +', updated_at='+ dateTime + ' where username='+data.username;
+                    let res = await User.query(updateSql, {type: QueryTypes.UPDATE});
+                    if (res[1]) {
+                        return retSuccess;
+                    }
+                    else {
+                        return {
+                            success: false,
+                            info: '修改用户信息失败',
+                            data: {},
+                        }
+                    }
+                }else {
+                    return {
+                        success: false,
+                        info: '修改用户信息失败，参数没有相关待修改信息',
+                        data: {},
+                    }
+                }
+            }else {
+                return {
+                    success: false,
+                    info: '修改失败，用户不存在',
+                    data: {},
+                }
+            }
+        }else {
+            return {
+                success: false,
+                info: '修改失败，参数有误，没有待修改 username',
+                data: {},
+            }
+        }
+    }catch (e) {
+        return {
+            success: false,
+            info: '修改用户失败: '+e,
+            data: {},
+        };
+    }
 }
 
 // 查询所有用户
@@ -163,31 +269,6 @@ let getUsers = async () => {
 }
 // test
 
-// 根据 username 查询指定用户
-let searchUserForUsernameIsExist = async (username) => {
-    try{
-        let searchSql = 'select user_id from users where username='+username;
-        let res = await User.query(searchSql, {type: QueryTypes.SELECT});
-        if(res.length){
-            return {
-                success: true,
-                info: '查询成功',
-                data: {
-                    user: res,
-                },
-            }
-        }else{
-            return {
-                success: false,
-                info: '查询失败，无此用户',
-                data: {},
-            };
-        };
-    }catch (err){
-        return {
-            success: false,
-            info: '查询用户失败: ' + err,
-            data: {},
-        }
-    }
+module.exports={
+
 }

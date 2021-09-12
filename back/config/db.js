@@ -46,6 +46,30 @@ module.exports = {
     // let insertUser = await sequelize.query('insert into users(user_id, username, password, phone, avatar_url, is_manage, ' +
     //     'created_at, updated_at, nickname) values(?,?,?,?,?,?,?,?,?)', {type: QueryTypes.INSERT, replacements: Object.values(data)});
     // console.log(insertUser);
+    //----------------------------
+    // for (let i=1; i<20; i++){
+    //     let date_time = await new Date();
+    //     let user_id = i
+    //     let data = {
+    //         user_id : user_id,
+    //         username : user_id.toString(),
+    //         password : 'password' + user_id.toString(),
+    //         phone : '186',
+    //         is_manage : false,
+    //         avatar_url : '',
+    //         created_at : date_time,
+    //         updated_at : date_time,
+    //         nickname : 'nickname' + user_id.toString(),
+    //     }
+    //     let insertSql = 'insert into users(user_id, username, password, phone, is_manage, avatar_url, created_at,' +
+    //         'updated_at, nickname) values(?,?,?,?,?,?,?,?,?)';
+    //     let insertUser = await sequelize.query(insertSql, {type: QueryTypes.INSERT, replacements: Object.values(data)});
+    //     console.log('----------------\n', insertUser, '\n-------------');
+    // }
+
+    // let updateSql = 'update users set nickname="hay" where username="12"';
+    // let res = await sequelize.query(updateSql, {type: QueryTypes.UPDATE}); // return: [undefined,1]
+    // console.log(res);
 })();
 
 
@@ -133,5 +157,5 @@ let testModel = ()=> {
             console.log(error)
         });
 }
-testModel();
+// testModel();
 // export default User;
