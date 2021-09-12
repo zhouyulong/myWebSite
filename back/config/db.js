@@ -2,8 +2,8 @@ const Sequelize = require('sequelize');
 const {QueryTypes} = require('sequelize');
 
 // 使用连接池
-let sequelize = new Sequelize('myWebSite', 'yulong', 'qwpo',{
-    host: '192.168.0.110',
+let sequelize = new Sequelize('myWebSite', 'yl', 'qw***9',{
+    host: 'heiheihei.com',
     dialect: 'mysql',
     pool: {
         max: 10,
@@ -86,12 +86,12 @@ const User = sequelize.define('users', {
         defaultValue: false,
     },
     created_at: {
-        type: 'TIMESTAMP',
-        allowNull: false,
+        type: Sequelize.DATE,
+        // allowNull: false,
     },
     updated_at: {
-        type: 'TIMESTAMP',
-        allowNull: false,
+        type: Sequelize.DATE,
+        // allowNull: false,
     },
 },{
     // 强制模型名字与表名相同，否则表名会是第一个参数 'users' 再复数 'userss'
@@ -111,7 +111,7 @@ let newUserTable = async () => {
     })
     console.log('-----------\n',res, '\n----------------');
 }
-// newUserTable();
+newUserTable();
 
 // 将表强制与模型同步 -- 更新
 // let updateUserTable = async () => {
