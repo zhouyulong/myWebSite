@@ -10,5 +10,3 @@
 ./back/config/
 ./back/test.js
 ./.vscode/
-./.idea/
-./back/config/mysqlConfig.js
