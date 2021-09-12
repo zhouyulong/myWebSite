@@ -1,9 +1,10 @@
 const Sequelize = require('sequelize');
 const {QueryTypes} = require('sequelize');
+const MySql = require('./mysqlConfig');
 
 // 使用连接池
-let sequelize = new Sequelize('myWebSite', 'yl', 'qw***9',{
-    host: 'heiheihei.com',
+let sequelize = new Sequelize(MySql.DATABASE_NAME, MySql.USERNAME, MySql.PASSWORD,{
+    host: MySql.HOST,
     dialect: 'mysql',
     pool: {
         max: 10,
@@ -111,7 +112,7 @@ let newUserTable = async () => {
     })
     console.log('-----------\n',res, '\n----------------');
 }
-newUserTable();
+// newUserTable();
 
 // 将表强制与模型同步 -- 更新
 // let updateUserTable = async () => {
@@ -132,5 +133,5 @@ let testModel = ()=> {
             console.log(error)
         });
 }
-// testModel();
+testModel();
 // export default User;
