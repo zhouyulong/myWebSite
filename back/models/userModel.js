@@ -158,7 +158,7 @@ let deleteUser = async (data) => {
 }
 
 // 修改用户信息 电话和昵称
-let updateUser = async (data) => {
+let updateUserPhoneOrNickname = async (data) => {
     try {
         if (data.username){
             let isExist = await searchUserForUsernameIsExist(data.username);
@@ -270,5 +270,8 @@ let getUsers = async () => {
 // test
 
 module.exports={
-
+    addUser,
+    deleteUser,
+    updateUserPhoneOrNickname,
+    getUsers,
 }
