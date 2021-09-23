@@ -9,3 +9,6 @@
 **/node_modules/
 ./back/config/
 ./back/test.js
+./.vscode/
+back/config/mysqlConfig.js
+.idea/
