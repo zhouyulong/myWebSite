@@ -1,6 +1,7 @@
 'use strict'
 
-const {User, QueryTypes} = require('../config/db')
+const {Users, QueryTypes} = require('../config/db')
+let User = Users;
 
 
 // 根据 username 查询指定用户

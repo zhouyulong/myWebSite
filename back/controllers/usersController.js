@@ -3,9 +3,28 @@ const User = require('../models/userModel');
 // 获取用户列表
 let getUsers = async (ctx, next) => {
     try{
-
+        let users = await User.getUsers();
+        if(users.success){
+            ctx.status = 200,
+            ctx.body = {
+                success: true,
+                msg: 'Add user succuessfully',
+                data: users.data.users,
+            }
+        }else{
+            ctx.status = 200,
+            ctx.body = {
+                success: false,
+                msg: 'Add user unsuccessfully',
+                data: [],
+            }
+        }
     }catch (e) {
-        ctx.body = {}
+        ctx.body = {
+            success: false,
+            msg: 'Add user unsuccessfully',
+            data: [],
+        }
     }
 }
 
