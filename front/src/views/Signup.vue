@@ -60,8 +60,18 @@
         },
         methods: {
             sumitSignup() {
+                if(this.password1!=this.password2){
+                 this.$message.error("两次密码不一致");
+                } else if (this.username && this.password1 && this.nickname){
+                    let obj = {
+                        username: this.username,
+                        password: this.password1,
+                        nickname: this.nickname
+                    };
+                    
+                }
                 console.log("提交表单");
-            },
+            }
         },
     }
 </script>

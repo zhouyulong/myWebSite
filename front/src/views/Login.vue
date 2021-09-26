@@ -6,7 +6,7 @@
                 <a-row type="flex" justify="center"><h3>登录</h3></a-row>
                 <a-row>
                     <a-col>
-                        <a-input type="text" v-model="username" placeholder="username">
+                        <a-input type="text" v-model="username" placeholder="username" :error-message="uname">
                             <a-icon slot="prefix" type="user" style="color:rgba(0,0,0,.25)" />
                         </a-input>
                     </a-col>
@@ -15,7 +15,7 @@
                 <a-row>
                     <!--  使用 offset 可以将列向右侧偏-->
                     <a-col>
-                        <a-input type="password" v-model="password1" placeholder="password">
+                        <a-input type="password" v-model="password" placeholder="password" :error-message="pass">
                             <a-icon slot="prefix" type="lock" style="color:rgba(0,0,0,.25)" />
                         </a-input>
                     </a-col>
@@ -24,8 +24,8 @@
 
                 <a-row type="flex" >
                     <a-button
-                            :disabled="username === '' || password1 === ''"
-                            @click="sumitSignup"
+                            :disabled="username === '' || password === ''"
+                            @click="sumitLogin"
                             style="width:45%;margin-left: 0px;">
                         登录
                     </a-button>
@@ -45,14 +45,27 @@
         data() {
             return {
                 username: '',
-                password1: '',
-                password2: '',
-                nickname: '',
+                password: ''
             };
-    },
+        },
+        computed:{
+        //   简单判断密码错误
+            pass(){
+                if(this.password === ""){
+                    return ''
+                }
+                else if(this.password.length<6){
+                    return '密码不可小于6位'
+                }
+                else return ''
+
+            }
+        },
         methods: {
-            sumitSignup() {
-                console.log("提交表单");
+            //提交登录
+            sumitLogin() {
+               //取到输入的密码和用户名
+               //和数据库中的作比对
             },
             ToSignup(){
                this.$router.push('/signup');
